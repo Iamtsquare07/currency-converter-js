@@ -1,0 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=Croissant+One&display=swap');
+
+body {
+    padding: 10px;
+    background-color: #000014;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: rgba(255, 217, 0, 0.61);
+    font-family: 'Croissant One', cursive;
+}
+
+.converter {
+    margin: auto;
+    width: 40%;
+    margin-top: 80px;
+    background-color: #00006e;
+    padding: 50px 20px 50px 20px;
+    border-radius: 10px;
+    box-shadow: 1px 1px 5px 1px #1b37b4;
+    color: #fff;
+}
+
+.convert-fields {
+    display: flex;
+    flex-direction: column;
+}
+
+button,
+input[type="button"],
+input[type="number"],
+select,
+option {
+    border-radius: 3px;
+    padding: 5px;
+    border: 1px solid #fff;
+
+}
+
+#convert-button {
+    margin-top: 10px;
+    text-align: right;
+    margin-bottom: 10px;
+}
+
+label {
+    margin-bottom: 10px;
+    margin-top: 10px;
+}

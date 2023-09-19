@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Currency Converter</title>
+</head>
+
+<body>
+    <h1>JavaScript Currency Converter</h1>
+    <div class="converter">
+        <div class="convert-fields">
+            <label for="currency-input">Amount</label>
+            <input type="number" id="currency-input" value="10">
+
+            <label for="from-currency-select">From</label>
+            <select id="from-currency-select">
+                <option value="USD">USD</option>
+                <option value="EUR">EUR</option>
+                <option value="GBP">GBP</option>
+                <option value="CNY">CNY</option>
+            </select>
+
+            <label for="to-currency-select">To</label>
+            <select id="to-currency-select">
+                <option value="EUR">EUR</option>
+                <option value="GBP">GBP</option>
+                <option value="CNY">CNY</option>
+                <option value="USD">USD</option>
+            </select>
+            <br>
+        </div>
+        <button id="convert-button">Convert</button>
+
+        <!-- Div element to display the converted result -->
+        <div class="converted-result">
+            <span id="converted-result-text"></span>
+        </div>
+    </div>
+    <script src="./currencryConverter.js"></script>
+</body>
+
+</html>
