@@ -18,7 +18,7 @@ h1 {
 
 .converter {
     margin: auto;
-    width: 40%;
+    width: 90%;
     margin-top: 80px;
     background-color: #00006e;
     padding: 50px 20px 50px 20px;
@@ -27,20 +27,30 @@ h1 {
     color: #fff;
 }
 
+.converter:hover {
+    box-shadow: 1px 1px 15px 2px #1b37b4;
+}
+
 .convert-fields {
     display: flex;
     flex-direction: column;
 }
 
 button,
-input[type="button"],
-input[type="number"],
+input[type="text"],
 select,
 option {
     border-radius: 3px;
     padding: 5px;
     border: 1px solid #fff;
+    box-shadow: 2px 2px 6px #cccccc;
+    cursor: pointer;
+}
 
+button:hover {
+    background-color:gold;
+    border: 1px solid gold;
+    box-shadow: 2px 2px 6px #e9e8e8;
 }
 
 #convert-button {
@@ -52,4 +62,34 @@ option {
 label {
     margin-bottom: 10px;
     margin-top: 10px;
+}
+
+#progress {
+    display: none;
+    height: 20px;
+    margin: auto;
+    width: 20%;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+.converted-result {
+    margin: auto;
+    height: 50px;
+    padding-top: 5px;
+    font-size: large;
+}
+
+.to-currency {
+    color: gold;
+    text-shadow: #1b37b4;
+    font-size: larger;
+}
+
+@media only screen and (min-width: 1024px) {
+    .converter {
+        min-width: 500px;
+        width: 40%;
+    }
+
 }

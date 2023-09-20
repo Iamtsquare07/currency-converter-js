@@ -1,27 +1,3 @@
-async function fetchCurrencyRates(amount, fromCurrency, toCurrency) {
-
-  const apiKey = '';
-  const apiUrl = `https://api.freecurrencyapi.com/v1/latest?amount=${amount}&from=${fromCurrency}&to=${toCurrency}&apikey=${apiKey}`;
-
-  try {
-      // Make a GET request to the API
-      const response = await fetch(apiUrl);
-
-      if (!response.ok) {
-          throw new Error('Network response was not ok');
-      }
-
-      const data = await response.json();
-
-      // Return the data
-      return data;
-  } catch (error) {
-      // Handle errors, e.g., network errors or API errors
-      console.error('Error fetching currency rates:', error);
-      throw error; // Re-throw the error for handling in the calling function
-  }
-}
-
 // Declare variables and constants
 const currencyFrom = document.querySelector('#from-currency-select');
 const currencyTo = document.querySelector('#to-currency-select');
@@ -30,75 +6,170 @@ const convertButton = document.querySelector('#convert-button');
 const resultContainer = document.querySelector('.converted-result');
 const resultAmount = document.querySelector('#converted-result-text');
 
-// Define a function to update the currency rate options in the select elements
-async function updateCurrencyRateOptions() {
-  try {
-      // Fetch the latest currency rates from the API (e.g., when the page loads)
-      const data = await fetchCurrencyRates(1, 'USD', 'EUR'); // Example conversion (you can adjust it)
 
-      // Extract currency rate data from the API response and populate the select elements
-      const currencyRates = {}; // Initialize an empty object for currency rates
+function removeCurrencyAndNonNumeric(inputString) {
+    // Regex pattern to match currency symbols and any character that is not a number (0-9)
+    const pattern = /[^0-9.]/g; // Allow decimal points
 
-      for (const currency in data.rates) {
-          currencyRates[currency] = data.rates[currency];
-      }
+    const cleanedString = inputString.replace(pattern, '');
 
-      // Update the select elements with the latest currency options and rates
-      const fromCurrencySelect = document.querySelector('#from-currency-select');
-      const toCurrencySelect = document.querySelector('#to-currency-select');
-
-
-      // Populate select options
-      for (const currency in currencyRates) {
-          const optionFrom = document.createElement('option');
-          optionFrom.value = currency;
-          optionFrom.textContent = currency;
-          fromCurrencySelect.appendChild(optionFrom);
-
-          const optionTo = document.createElement('option');
-          optionTo.value = currency;
-          optionTo.textContent = currency;
-          toCurrencySelect.appendChild(optionTo);
-      }
-  } catch (error) {
-      // Handle errors, e.g., network errors or API errors
-      console.error('Error updating currency rate options:', error);
-  }
+    return cleanedString;
 }
 
-// Call the function to update currency rate options when the page loads
-updateCurrencyRateOptions()
-  .then(() => {
-      // Call this when the page is loaded and currency options are updated
-      // If needed, you can perform additional actions here
-  })
-  .catch((error) => {
-      console.error('Error updating currency rate options:', error);
-  });
+// Fetch the currency from API
+async function fetchCurrencyRates(fromCurrency, toCurrency) {
+  // Create a new free account at: https://freecurrencyapi.com/ to get a free apikey, please use your own API key if you're planing on working with this code.
+    const initiate = ''; //Use your API Key here 
+    const apiUrl = `https://api.freecurrencyapi.com/v1/latest?base_currency=${fromCurrency}&currencies=${toCurrency}&apikey=${initiate}`;
+    try {
+        const response = await fetch(apiUrl);
 
-// Define the convertCurrency function
-// Define the convertCurrency function
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+
+        return data;
+    } catch (error) {
+        console.error('Error fetching currency rates:', error);
+        throw error;
+    }
+}
+
+// Currencies
+const currencySymbols = {
+    AUD: 'A$',
+    BGN: 'BGN',
+    BRL: 'R$',
+    CAD: 'C$',
+    CHF: 'CHF',
+    CNY: '¥',
+    CZK: 'Kč',
+    DKK: 'kr',
+    EUR: '€',
+    GBP: '£',
+    HKD: 'HK$',
+    HRK: 'kn',
+    HUF: 'Ft',
+    IDR: 'Rp',
+    ILS: '₪',
+    INR: '₹',
+    ISK: 'kr',
+    JPY: '¥',
+    KRW: '₩',
+    MXN: 'Mex$',
+    MYR: 'RM',
+    NOK: 'kr',
+    NZD: 'NZ$',
+    PHP: '₱',
+    PLN: 'zł',
+    RON: 'lei',
+    RUB: '₽',
+    SEK: 'kr',
+    SGD: 'S$',
+    THB: '฿',
+    TRY: '₺',
+    USD: '$',
+    ZAR: 'R',
+};
+
+function detectCurrencySymbol(selectedCurrencyCode) {
+    const currencySelect = document.getElementById('from-currency-select');
+    const selectedOption = currencySelect.querySelector(`[value="${selectedCurrencyCode}"]`);
+
+    if (selectedOption) {
+        // Extract the currency name from the selected option's text content
+        const currencyName = selectedOption.textContent.trim().split(' - ')[1];
+        return currencyName;
+    }
+
+    return 'Unknown'; // Default value if the currency code is not found
+}
+
+
+
 async function convertCurrency() {
-  const from = currencyFrom.value;
-  const to = currencyTo.value;
-  const amountValue = parseFloat(amount.value);
+    const from = currencyFrom.value;
+    const to = currencyTo.value;
+    const amountValue = parseFloat(removeCurrencyAndNonNumeric(amount.value));
 
-  try {
-      const data = await fetchCurrencyRates(amountValue, from, to);
+    resultAmount.textContent = '';
+    const progress = document.getElementById('progress');
+    progress.style.display = 'block';
+    try {
+        const data = await fetchCurrencyRates(from, to);
+        // Handle the conversion result
+        const currencies = data.data;
+        if (currencies) {
+            const fromSymbol = getCurrencySymbol(from);
+            const toSymbol = getCurrencySymbol(to);
+            const fromName = detectCurrencySymbol(from);
+            const toName = detectCurrencySymbol(to);
 
-      // Handle the conversion result here
-      const convertedAmount = data.convertedAmount; // Adjust the property name based on the API response structure
-      resultAmount.textContent = convertedAmount;
-      resultContainer.style.display = 'block';
-  } catch (error) {
-      // Handle errors, e.g., network errors or API errors
-      console.error('Error converting currency:', error);
-  }
+            const convertedAmount = currencies[to] * amountValue;
+            resultAmount.innerHTML = `${fromSymbol}${amountValue} ${fromName} = <span class="to-currency">${toSymbol}${convertedAmount.toFixed(2)} ${toName}</span>
+        <br><br>Rate: ${fromSymbol}1 = ${toSymbol} ${currencies[to]}`;
+            resultContainer.style.display = 'block';
+        } else {
+            console.log(`An issue occurred while fetching currencies. fetchCurrencyRates returned ${currencies}`)
+        }
+        progress.style.display = 'none';
+
+    } catch (error) {
+        // Handle errors, e.g., network errors or API errors
+        console.error('Error converting currency:', error);
+    }
 }
 
-// Event listener for the Convert button
-convertButton.addEventListener('click', convertCurrency);
+
+function getCurrencySymbol(currencyCode) {
+    // Convert the input currency code to uppercase
+    const code = currencyCode.toUpperCase();
+
+    // Check if the currency code exists in the symbols object
+    if (currencySymbols[code]) {
+        return currencySymbols[code];
+    } else {
+        return '';
+    }
+}
 
 
-// Event listener for the Convert button
+// Function to update the input value with currency symbol
+function updateInputWithCurrencySymbol(currencyCode) {
+    const inputElement = document.getElementById('currency-input');
+    const symbol = getCurrencySymbol(currencyCode);
+    const inputValue = inputElement.value;
+
+    // Check if the input value contains any currency symbol
+    for (const code in currencySymbols) {
+        if (inputValue.includes(getCurrencySymbol(code))) {
+            // Replace the existing currency symbol with the new symbol
+            inputElement.value = inputValue.replace(getCurrencySymbol(code), symbol);
+            return;
+        }
+    }
+
+    // If no currency symbol found in the input value, add the new symbol
+    inputElement.value = `${symbol}${inputValue}`;
+}
+
+// Event listeners for currency select elements
+const fromCurrencySelect = document.querySelector('#from-currency-select');
+const toCurrencySelect = document.querySelector('#to-currency-select');
+
+fromCurrencySelect.addEventListener('change', function() {
+    // Update the "From" input value with the selected currency symbol
+    const selectedCurrency = fromCurrencySelect.value;
+    updateInputWithCurrencySymbol(selectedCurrency);
+    convertCurrency()
+});
+
+toCurrencySelect.addEventListener('change', function() {
+    // Update the "To" input value with the selected currency symbol
+    convertCurrency()
+});
+
+
 convertButton.addEventListener('click', convertCurrency);
