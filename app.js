@@ -1,4 +1,3 @@
-// Declare variables and constants
 const currencyFrom = document.querySelector("#from-currency-select");
 const currencyTo = document.querySelector("#to-currency-select");
 const amount = document.querySelector("#currency-input");
@@ -8,7 +7,7 @@ const resultAmount = document.querySelector("#converted-result-text");
 
 function removeCurrencyAndNonNumeric(inputString) {
   // Regex pattern to match currency symbols and any character that is not a number (0-9)
-  const pattern = /[^0-9.]/g; // Allow decimal points
+  const pattern = /[^0-9.]/g;
 
   const cleanedString = inputString.replace(pattern, "");
 
@@ -18,7 +17,7 @@ function removeCurrencyAndNonNumeric(inputString) {
 // Fetch the currency from API
 async function fetchCurrencyRates(fromCurrency, toCurrency) {
   // Create a new free account at: https://freecurrencyapi.com/ to get a free apikey, please use your own API key if you're planing on working with this code.
-  const initiate = "fca_live_V7f5JBgQLR88NtkYmtnqL0M6yKOlmRD6qw5UdDAq"; //Use your API Key here
+  const initiate = ""; //Use your API Key here
   const apiUrl = `https://api.freecurrencyapi.com/v1/latest?base_currency=${fromCurrency}&currencies=${toCurrency}&apikey=${initiate}`;
   try {
     const response = await fetch(apiUrl);
@@ -107,8 +106,10 @@ async function convertCurrency() {
       const toName = detectCurrencySymbol(to);
 
       const convertedAmount = currencies[to] * amountValue;
-      resultAmount.innerHTML = `${fromSymbol}${amountValue} ${fromName} = <span class="to-currency">${toSymbol}${convertedAmount.toFixed(
-        2
+      resultAmount.innerHTML = `${fromSymbol}${formatNumber(
+        amountValue
+      )} ${fromName} = <span class="to-currency">${toSymbol}${formatNumber(
+        convertedAmount.toFixed(2)
       )} ${toName}</span>
         <br><br>Rate: ${fromSymbol}1 = ${toSymbol} ${currencies[to]}`;
       resultContainer.style.display = "block";
@@ -172,3 +173,8 @@ toCurrencySelect.addEventListener("change", function () {
 });
 
 convertButton.addEventListener("click", convertCurrency);
+
+// Format numbers to include the appropriate commas
+function formatNumber(number) {
+  return parseInt(number).toLocaleString();
+}
