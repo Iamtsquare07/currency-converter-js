@@ -14,10 +14,11 @@ function removeCurrencyAndNonNumeric(inputString) {
   return cleanedString;
 }
 
-// Fetch the currency from API
+const initiate = ""; //  Use your API Key here
+
+// Fetch the currency rates from API
 async function fetchCurrencyRates(fromCurrency, toCurrency) {
   // Create a new free account at: https://freecurrencyapi.com/ to get a free apikey, please use your own API key if you're planing on working with this code.
-  const initiate = ""; //Use your API Key here
   const apiUrl = `https://api.freecurrencyapi.com/v1/latest?base_currency=${fromCurrency}&currencies=${toCurrency}&apikey=${initiate}`;
   try {
     const response = await fetch(apiUrl);
@@ -84,7 +85,7 @@ function detectCurrencySymbol(selectedCurrencyCode) {
     return currencyName;
   }
 
-  return "Unknown"; // Default value if the currency code is not found
+  return "Unknown";
 }
 
 async function convertCurrency() {
@@ -97,7 +98,6 @@ async function convertCurrency() {
   progress.style.display = "block";
   try {
     const data = await fetchCurrencyRates(from, to);
-    // Handle the conversion result
     const currencies = data.data;
     if (currencies) {
       const fromSymbol = getCurrencySymbol(from);
@@ -120,7 +120,6 @@ async function convertCurrency() {
     }
     progress.style.display = "none";
   } catch (error) {
-    // Handle errors, e.g., network errors or API errors
     console.error("Error converting currency:", error);
   }
 }
@@ -173,6 +172,9 @@ toCurrencySelect.addEventListener("change", function () {
 });
 
 convertButton.addEventListener("click", convertCurrency);
+amount.addEventListener("keypress", (e) => {
+  if(e.key === "Enter") convertCurrency();
+})
 
 // Format numbers to include the appropriate commas
 function formatNumber(number) {
