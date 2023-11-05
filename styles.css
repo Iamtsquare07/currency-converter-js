@@ -102,6 +102,22 @@ i {
     font-size: larger;
 }
 
+::-webkit-scrollbar {
+    width: 2px;
+    /* Width of the scrollbar */
+}
+
+/* Style the scrollbar thumb (the draggable part) */
+::-webkit-scrollbar-thumb {
+    background: #3551f185;
+    border-radius: 6px;
+}
+
+/* Style the scrollbar track when hovering over it */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
 @media only screen and (min-width: 1024px) {
     .converter {
         min-width: 500px;
